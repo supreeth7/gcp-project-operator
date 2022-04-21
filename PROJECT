@@ -16,4 +16,13 @@ resources:
   kind: ProjectClaim
   path: github.com/openshift/gcp-project-operator/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: managed.openshift.io
+  group: gcp
+  kind: ProjectReference
+  path: github.com/openshift/gcp-project-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"

@@ -27,11 +27,10 @@ import (
 
 	gcpv1alpha1 "github.com/openshift/gcp-project-operator/api/v1alpha1"
 	condition "github.com/openshift/gcp-project-operator/pkg/condition"
-	"github.com/openshift/gcp-project-operator/pkg/util"
 	gcputil "github.com/openshift/gcp-project-operator/pkg/util"
 )
 
-//go:generate mockgen -destination=../../util/mocks/$GOPACKAGE/customeresourceadapter.go -package=$GOPACKAGE github.com/openshift/gcp-project-operator/pkg/controller/projectclaim CustomResourceAdapter
+//go:generate mockgen -destination=../../util/mocks/$GOPACKAGE/customeresourceadapter.go -package=$GOPACKAGE github.com/openshift/gcp-project-operator/controllers CustomResourceAdapter
 type CustomResourceAdapter interface {
 	EnsureProjectClaimFakeProcessed() (gcputil.OperationResult, error)
 	EnsureProjectClaimDeletionProcessed() (gcputil.OperationResult, error)
@@ -88,10 +87,10 @@ func (r *ProjectClaimReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	reason := "ReconcileError"
 	_, _ = adapter.SetProjectClaimCondition(gcpv1alpha1.ConditionError, reason, err)
 
-	return result, nil
+	return result, err
 }
 
-type ReconcileOperation func() (util.OperationResult, error)
+type ReconcileOperation func() (gcputil.OperationResult, error)
 
 // ReconcileHandler reads that state of the cluster for a ProjectClaim object and makes changes based on the state read
 // and what is in the ProjectClaim.Spec

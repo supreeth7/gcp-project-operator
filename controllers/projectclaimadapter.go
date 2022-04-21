@@ -12,13 +12,11 @@ import (
 	"github.com/openshift/gcp-project-operator/pkg/configmap"
 	gcputil "github.com/openshift/gcp-project-operator/pkg/util"
 	operrors "github.com/openshift/gcp-project-operator/pkg/util/errors"
-	"sigs.k8s.io/cluster-api/util"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -134,14 +132,14 @@ func (c *ProjectClaimAdapter) EnsureCCSSecretFinalizerDeleted() error {
 }
 
 // deleteFinalizer deletes finalizer of a generic CR
-func (c *ProjectClaimAdapter) deleteFinalizer(object runtime.Object, finalizer string) error {
+func (c *ProjectClaimAdapter) deleteFinalizer(object client.Object, finalizer string) error {
 	metadata, err := meta.Accessor(object)
 	if err != nil {
 		return operrors.Wrap(err, "Failed to delete finalizer "+finalizer)
 	}
 	finalizers := metadata.GetFinalizers()
-	if util.Contains(finalizers, finalizer) {
-		metadata.SetFinalizers(util.Filter(finalizers, finalizer))
+	if Contains(finalizers, finalizer) {
+		metadata.SetFinalizers(Filter(finalizers, finalizer))
 		return c.client.Update(context.TODO(), object)
 	}
 	return nil
@@ -212,7 +210,7 @@ func (c *ProjectClaimAdapter) EnsureProjectReferenceLink() (gcputil.OperationRes
 
 // EnsureFinalizer adds finalizer to a ProjectClaim
 func (c *ProjectClaimAdapter) EnsureFinalizer() (gcputil.OperationResult, error) {
-	if !util.Contains(c.projectClaim.GetFinalizers(), ProjectClaimFinalizer) {
+	if !Contains(c.projectClaim.GetFinalizers(), ProjectClaimFinalizer) {
 		c.logger.Info("Adding Finalizer to the ProjectClaim")
 		err := c.addFinalizer(c.projectClaim, ProjectClaimFinalizer)
 		return gcputil.RequeueOnErrorOrStop(err)
@@ -235,13 +233,13 @@ func (c *ProjectClaimAdapter) EnsureCCSSecretFinalizer() (gcputil.OperationResul
 }
 
 // addFinalizer adds finalizer to a generic CR
-func (c *ProjectClaimAdapter) addFinalizer(object runtime.Object, finalizer string) error {
+func (c *ProjectClaimAdapter) addFinalizer(object client.Object, finalizer string) error {
 	metadata, err := meta.Accessor(object)
 	if err != nil {
 		return operrors.Wrap(err, "Failed to add finalizer "+finalizer)
 	}
 	finalizers := metadata.GetFinalizers()
-	if !util.Contains(finalizers, finalizer) {
+	if !Contains(finalizers, finalizer) {
 		metadata.SetFinalizers(append(finalizers, finalizer))
 		return c.client.Update(context.TODO(), object)
 	}
@@ -270,7 +268,8 @@ func (c *ProjectClaimAdapter) EnsureProjectReferenceExists() (gcputil.OperationR
 	}
 
 	if !projectReferenceExists {
-		return gcputil.RequeueOnErrorOrContinue(c.client.Create(context.TODO(), c.projectReference))
+		return gcputil.RequeueOnErrorOrContinue(
+			c.client.Create(context.TODO(), c.projectReference))
 	}
 	return gcputil.ContinueProcessing()
 }
@@ -336,7 +335,7 @@ func (c *ProjectClaimAdapter) IsRegionSupported() (bool, error) {
 	if err != nil {
 		return true, operrors.Wrap(err, "could not find the OperatorConfigMap")
 	}
-	if util.Contains(operatorConfigMap.DisabledRegions, c.projectClaim.Spec.Region) {
+	if Contains(operatorConfigMap.DisabledRegions, c.projectClaim.Spec.Region) {
 		return false, nil
 	}
 	return true, nil
@@ -368,4 +367,24 @@ func (c *ProjectClaimAdapter) StatusUpdate() error {
 	}
 
 	return nil
+}
+
+// Contains returns true if a list contains a string.
+func Contains(list []string, strToSearch string) bool {
+	for _, item := range list {
+		if item == strToSearch {
+			return true
+		}
+	}
+	return false
+}
+
+// Filter filters a list for a string.
+func Filter(list []string, strToFilter string) (newList []string) {
+	for _, item := range list {
+		if item != strToFilter {
+			newList = append(newList, item)
+		}
+	}
+	return
 }

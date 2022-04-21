@@ -287,7 +287,7 @@ func (c *gcpClient) DeleteServiceAccountKeys(serviceAccountEmail string) error {
 	}
 
 	if len(newResponse.Keys) > 1 {
-		return fmt.Errorf("gcpclient.DeleteServiceAccountKeys.Projects.ServiceAccounts.Keys.Delete: %v", errors.New("Could not delete all keys"))
+		return fmt.Errorf("gcpclient.DeleteServiceAccountKeys.Projects.ServiceAccounts.Keys.Delete: %v", errors.New("could not delete all keys"))
 	}
 
 	return nil
