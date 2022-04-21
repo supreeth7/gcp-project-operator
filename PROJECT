@@ -1,0 +1,9 @@
+domain: managed.openshift.io
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: gcp-project-operator
+repo: github.com/openshift/gcp-project-operator
+version: "3"
