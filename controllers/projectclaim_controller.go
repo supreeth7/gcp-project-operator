@@ -30,7 +30,7 @@ import (
 	gcputil "github.com/openshift/gcp-project-operator/pkg/util"
 )
 
-//go:generate mockgen -destination=../../util/mocks/$GOPACKAGE/customeresourceadapter.go -package=$GOPACKAGE github.com/openshift/gcp-project-operator/controllers CustomResourceAdapter
+//go:generate mockgen -destination=../pkg/util/mocks/$GOPACKAGE/customeresourceadapter.go -package=$GOPACKAGE github.com/openshift/gcp-project-operator/controllers CustomResourceAdapter
 type CustomResourceAdapter interface {
 	EnsureProjectClaimFakeProcessed() (gcputil.OperationResult, error)
 	EnsureProjectClaimDeletionProcessed() (gcputil.OperationResult, error)

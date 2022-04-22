@@ -51,7 +51,7 @@ const (
 type ProjectReferenceReconciler struct {
 	client.Client
 	Scheme           *runtime.Scheme
-	gcpClientBuilder func(projectName string, authJSON []byte) (gcpclient.Client, error)
+	GcpClientBuilder func(projectName string, authJSON []byte) (gcpclient.Client, error)
 }
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
@@ -152,7 +152,7 @@ func (r *ProjectReferenceReconciler) getGcpClient(projectReference *gcpv1alpha1.
 	}
 
 	// Get gcpclient with creds
-	gcpClient, err := r.gcpClientBuilder(projectReference.Spec.GCPProjectID, creds)
+	gcpClient, err := r.GcpClientBuilder(projectReference.Spec.GCPProjectID, creds)
 	if err != nil {
 		return nil, operrors.Wrap(err, fmt.Sprintf("could not get gcp client with secret: %s, for namespace %s", credSecretName, credSecretNamespace))
 	}
