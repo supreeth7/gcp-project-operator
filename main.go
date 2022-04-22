@@ -17,7 +17,6 @@ limitations under the License.
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -38,7 +37,6 @@ import (
 
 	gcpv1alpha1 "github.com/openshift/gcp-project-operator/api/v1alpha1"
 	"github.com/openshift/gcp-project-operator/controllers"
-	"github.com/operator-framework/operator-lib/leader"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -74,18 +72,13 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
-	// Become the leader before proceeding
-	err := leader.Become(context.TODO(), "gcp-project-operator-lock")
-	if err != nil {
-		setupLog.Error(err, "unable to start manager")
-		os.Exit(1)
-	}
-
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		MetricsBindAddress:     fmt.Sprintf("%s:%d", metricsHost, metricsPort),
 		HealthProbeBindAddress: probeAddr,
 		MapperProvider:         func(cfg *rest.Config) (meta.RESTMapper, error) { return apiutil.NewDynamicRESTMapper(cfg) },
 		Namespace:              "",
+		LeaderElection:         enableLeaderElection,
+		LeaderElectionID:       "3c1c887a.example.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

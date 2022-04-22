@@ -1,6 +1,17 @@
 apiVersion: gcp.managed.openshift.io/v1alpha1
 kind: ProjectClaim
 metadata:
-  name: projectclaim-sample
+  name: example-projectclaim
+  namespace: example-clusternamespace
 spec:
-  # TODO(user): Add fields here
+  region: us-east1
+  gcpCredentialSecret:
+    name: gcp-secret
+    namespace: example-clusternamespace
+  projectReferenceCRLink:
+    name: example-projectreference
+    namespace: gcp-project-operator
+  legalEntity:
+    name: example-entity
+    id: example-id
+  gcpProjectID: example-GCPprojectID

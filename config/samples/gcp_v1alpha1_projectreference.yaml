@@ -1,6 +1,13 @@
 apiVersion: gcp.managed.openshift.io/v1alpha1
 kind: ProjectReference
 metadata:
-  name: projectreference-sample
+  name: example-projectreference
+  namespace: gcp-project-operator
 spec:
-  # TODO(user): Add fields here
+  gcpProjectID: example-GCPProjectID
+  projectClaimCRLink:
+    name: example-projectclaim
+    namespace: example-clusternamespace
+  legalEntity:
+    name: example-entity
+    id: example-id
