@@ -17,6 +17,7 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -37,6 +38,7 @@ import (
 
 	gcpv1alpha1 "github.com/openshift/gcp-project-operator/api/v1alpha1"
 	"github.com/openshift/gcp-project-operator/controllers"
+	"github.com/operator-framework/operator-lib/leader"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -76,10 +78,15 @@ func main() {
 		MetricsBindAddress:     fmt.Sprintf("%s:%d", metricsHost, metricsPort),
 		HealthProbeBindAddress: probeAddr,
 		MapperProvider:         func(cfg *rest.Config) (meta.RESTMapper, error) { return apiutil.NewDynamicRESTMapper(cfg) },
-		Namespace:              "",
-		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "3c1c887a.example.com",
+		Namespace:              "", // watch all namespaces
 	})
+	if err != nil {
+		setupLog.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
+
+	// Become the leader before proceeding
+	err = leader.Become(context.TODO(), "gcp-project-operator-lock")
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
@@ -89,7 +96,7 @@ func main() {
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "ProjectClaim")
+		setupLog.Error(err, "unable to create controller", "controlledr", "ProjectClaim")
 		os.Exit(1)
 	}
 	if err = (&controllers.ProjectReferenceReconciler{

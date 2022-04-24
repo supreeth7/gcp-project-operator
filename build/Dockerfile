@@ -1,4 +1,4 @@
-FROM quay.io/app-sre/boilerplate:image-v2.1.0 AS builder
+FROM quay.io/app-sre/boilerplate:image-v2.2.0 AS builder
 ENV OPERATOR_PATH=/gcp-project-operator
 COPY . ${OPERATOR_PATH}
 WORKDIR ${OPERATOR_PATH}
@@ -17,4 +17,4 @@ USER 65532:65532
 LABEL io.openshift.managed.name="gcp-project-operator" \
     io.openshift.managed.description="This operator will be responsible for managing GCP project and credentials."
 
-ENTRYPOINT ["/gcp-project-operator"]
+ENTRYPOINT ["/usr/local/bin/gcp-project-operator"]
