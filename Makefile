@@ -1,3 +1,5 @@
+include boilerplate/generated-includes.mk
+
 OPERATOR_NAME=gcp-project-operator
 
 # VERSION defines the project version for the bundle.

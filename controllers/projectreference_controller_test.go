@@ -69,9 +69,9 @@ var _ = Describe("ProjectReference controller reconcilation", func() {
 		configMap = corev1.ConfigMap{
 			Data: map[string]string{
 				configmap.OperatorConfigMapKey: `
-billingAccount: fake-account
-parentFolderID: fake-folder
-`,
+					billingAccount: fake-account
+					parentFolderID: fake-folder
+				`,
 			},
 		}
 	})
