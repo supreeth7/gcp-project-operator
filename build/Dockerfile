@@ -4,7 +4,6 @@ COPY . ${OPERATOR_PATH}
 WORKDIR ${OPERATOR_PATH}
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o gcp-project-operator main.go
 RUN make go-build
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
