@@ -73,7 +73,6 @@ type ProjectClaim struct {
 }
 
 //+kubebuilder:object:root=true
-
 // ProjectClaimList contains a list of ProjectClaim
 type ProjectClaimList struct {
 	metav1.TypeMeta `json:",inline"`

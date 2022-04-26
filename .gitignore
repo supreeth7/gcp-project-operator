@@ -23,3 +23,6 @@ testbin/*
 *.swp
 *.swo
 *~
+
+# project binary
+gcp-project-operator

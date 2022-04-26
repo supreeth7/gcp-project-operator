@@ -1,5 +1,0 @@
-## Append samples you want in your CSV to this file as resources ##
-resources:
-- gcp_v1alpha1_projectclaim.yaml
-- gcp_v1alpha1_projectreference.yaml
-#+kubebuilder:scaffold:manifestskustomizesamples
