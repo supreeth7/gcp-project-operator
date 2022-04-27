@@ -138,8 +138,8 @@ func (c *ProjectClaimAdapter) deleteFinalizer(object client.Object, finalizer st
 		return operrors.Wrap(err, "Failed to delete finalizer "+finalizer)
 	}
 	finalizers := metadata.GetFinalizers()
-	if Contains(finalizers, finalizer) {
-		metadata.SetFinalizers(Filter(finalizers, finalizer))
+	if gcputil.Contains(finalizers, finalizer) {
+		metadata.SetFinalizers(gcputil.Filter(finalizers, finalizer))
 		return c.client.Update(context.TODO(), object)
 	}
 	return nil
@@ -210,7 +210,7 @@ func (c *ProjectClaimAdapter) EnsureProjectReferenceLink() (gcputil.OperationRes
 
 // EnsureFinalizer adds finalizer to a ProjectClaim
 func (c *ProjectClaimAdapter) EnsureFinalizer() (gcputil.OperationResult, error) {
-	if !Contains(c.projectClaim.GetFinalizers(), ProjectClaimFinalizer) {
+	if !gcputil.Contains(c.projectClaim.GetFinalizers(), ProjectClaimFinalizer) {
 		c.logger.Info("Adding Finalizer to the ProjectClaim")
 		err := c.addFinalizer(c.projectClaim, ProjectClaimFinalizer)
 		return gcputil.RequeueOnErrorOrStop(err)
@@ -239,7 +239,7 @@ func (c *ProjectClaimAdapter) addFinalizer(object client.Object, finalizer strin
 		return operrors.Wrap(err, "Failed to add finalizer "+finalizer)
 	}
 	finalizers := metadata.GetFinalizers()
-	if !Contains(finalizers, finalizer) {
+	if !gcputil.Contains(finalizers, finalizer) {
 		metadata.SetFinalizers(append(finalizers, finalizer))
 		return c.client.Update(context.TODO(), object)
 	}
@@ -335,7 +335,7 @@ func (c *ProjectClaimAdapter) IsRegionSupported() (bool, error) {
 	if err != nil {
 		return true, operrors.Wrap(err, "could not find the OperatorConfigMap")
 	}
-	if Contains(operatorConfigMap.DisabledRegions, c.projectClaim.Spec.Region) {
+	if gcputil.Contains(operatorConfigMap.DisabledRegions, c.projectClaim.Spec.Region) {
 		return false, nil
 	}
 	return true, nil

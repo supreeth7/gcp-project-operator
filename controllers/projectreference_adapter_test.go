@@ -690,7 +690,7 @@ var _ = Describe("ProjectreferenceAdapter", func() {
 		})
 		Context("When the finalizer does not exist", func() {
 			It("does nothing", func() {
-				projectReference.SetFinalizers(Filter(projectReference.GetFinalizers(), FinalizerName))
+				projectReference.SetFinalizers(util.Filter(projectReference.GetFinalizers(), FinalizerName))
 				err := adapter.EnsureFinalizerDeleted()
 				Expect(err).ToNot(HaveOccurred())
 				Expect(projectReference.Finalizers).ToNot(ContainElement(FinalizerName))
@@ -701,7 +701,7 @@ var _ = Describe("ProjectreferenceAdapter", func() {
 	Context("EnsureFinalizerAdded", func() {
 		Context("When the finalizer does not exist", func() {
 			It("adds the finalizer and updates the instance", func() {
-				projectReference.SetFinalizers(Filter(projectReference.GetFinalizers(), FinalizerName))
+				projectReference.SetFinalizers(util.Filter(projectReference.GetFinalizers(), FinalizerName))
 				mockKubeClient.EXPECT().Update(gomock.Any(), projectReference)
 				_, err := EnsureFinalizerAdded(adapter)
 				Expect(err).ToNot(HaveOccurred())

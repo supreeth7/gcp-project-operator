@@ -338,7 +338,7 @@ func (r *ReferenceAdapter) IsDeletionRequested() bool {
 
 // EnsureFinalizerAdded parses the meta.Finalizers of ProjectReference instance and adds FinalizerName if not found.
 func EnsureFinalizerAdded(r *ReferenceAdapter) (gcputil.OperationResult, error) {
-	if !Contains(r.ProjectReference.GetFinalizers(), FinalizerName) {
+	if !gcputil.Contains(r.ProjectReference.GetFinalizers(), FinalizerName) {
 		r.ProjectReference.SetFinalizers(append(r.ProjectReference.GetFinalizers(), FinalizerName))
 		return gcputil.RequeueOnErrorOrStop(r.kubeClient.Update(context.TODO(), r.ProjectReference))
 	}
@@ -349,8 +349,8 @@ func EnsureFinalizerAdded(r *ReferenceAdapter) (gcputil.OperationResult, error) 
 func (r *ReferenceAdapter) EnsureFinalizerDeleted() error {
 	r.logger.Info("Deleting Finalizer")
 	finalizers := r.ProjectReference.GetFinalizers()
-	if Contains(finalizers, FinalizerName) {
-		r.ProjectReference.SetFinalizers(Filter(finalizers, FinalizerName))
+	if gcputil.Contains(finalizers, FinalizerName) {
+		r.ProjectReference.SetFinalizers(gcputil.Filter(finalizers, FinalizerName))
 		return r.kubeClient.Update(context.TODO(), r.ProjectReference)
 	}
 	return nil
@@ -529,7 +529,7 @@ func (r *ReferenceAdapter) configureBillingAPI() error {
 		return err
 	}
 
-	if !Contains(enabledAPIs, "cloudbilling.googleapis.com") {
+	if !gcputil.Contains(enabledAPIs, "cloudbilling.googleapis.com") {
 		r.logger.Info("Enabling Billing API")
 		err := r.gcpClient.EnableAPI(r.ProjectReference.Spec.GCPProjectID, "cloudbilling.googleapis.com")
 		if err != nil {
@@ -552,7 +552,7 @@ func (r *ReferenceAdapter) configureAPIS() error {
 	}
 
 	for _, api := range OSDRequiredAPIS {
-		if !Contains(enabledAPIs, api) {
+		if !gcputil.Contains(enabledAPIs, api) {
 			err = r.gcpClient.EnableAPI(r.ProjectReference.Spec.GCPProjectID, api)
 			if err != nil {
 				return operrors.Wrap(err, fmt.Sprintf("error enabling %s api for project %s", api, r.ProjectReference.Spec.GCPProjectID))

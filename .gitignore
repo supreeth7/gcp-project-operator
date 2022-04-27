@@ -26,3 +26,14 @@ testbin/*
 
 # project binary
 gcp-project-operator
+
+### boilerplate
+.operator-sdk/
+
+# temporary
+boilerplate
+
+# app-sre pipeline
+.docker/
+Dockerfile.olm-registry
+saas-gcp-project-operator-bundle/

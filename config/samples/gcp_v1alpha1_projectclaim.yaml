@@ -2,7 +2,7 @@ apiVersion: gcp.managed.openshift.io/v1alpha1
 kind: ProjectClaim
 metadata:
   name: example-projectclaim
-  namespace: gcp-project-operator
+  namespace: example-clusternamespace
 spec:
   region: us-east1
   gcpCredentialSecret:
