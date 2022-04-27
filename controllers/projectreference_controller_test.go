@@ -17,7 +17,6 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/openshift/gcp-project-operator/api/v1alpha1"
 	gcpv1alpha1 "github.com/openshift/gcp-project-operator/api/v1alpha1"
 	. "github.com/openshift/gcp-project-operator/controllers"
 	"github.com/openshift/gcp-project-operator/pkg/configmap"
@@ -300,7 +299,7 @@ parentFolderID: fake-folder
 
 	Context("When project claim CR is not PendingProject", func() {
 		BeforeEach(func() {
-			projectClaim.Status.State = v1alpha1.ClaimStatusPending
+			projectClaim.Status.State = gcpv1alpha1.ClaimStatusPending
 			projectReference.Status.Conditions = []gcpv1alpha1.Condition{}
 			mockKubeClient.EXPECT().Get(gomock.Any(), projectReferenceName, gomock.Any()).SetArg(2, *projectReference).Times(1)
 			mockKubeClient.EXPECT().Get(gomock.Any(), gomock.Any(), gomock.Any()).SetArg(2, corev1.Secret{
