@@ -29,9 +29,13 @@ gcp-project-operator
 
 ### boilerplate
 .operator-sdk/
+.venv
 
 # temporary
 boilerplate
+.ci-operator.yaml
+.codecov.yml
+.gitattributes
 
 # app-sre pipeline
 .docker/
